@@ -33,7 +33,7 @@ def scrap_upload_pizzahut():
     time.sleep(5) 
     inputElement.send_keys(Keys.ARROW_DOWN)
     inputElement.send_keys(Keys.ENTER)
-    # time.sleep(5) 
+    time.sleep(3) 
     #print(driver.title)
     all_product = []
     pan_pizza=[]
@@ -198,8 +198,39 @@ def scrap_upload_pizzahut():
             "catagory": "Drinks"
             })
     print(len(drinks))
-    #all_product.append(drinks)
     
+    #######################################################################
+    #all_product.append(drinks)//*[@id="navbar"]/ul/li[4]/a
+    deals = []
+    inputElement = driver.find_element_by_xpath('//*[@id="navbar"]/ul/li[4]/a').click()
+    inputElement = driver.find_elements_by_class_name("deals_card")
+    for el in inputElement:
+        items  = el.find_element_by_class_name("deal-item-name")
+        #print(items.text)
+        try:
+            price  = el.find_element_by_class_name("pro_price").text
+            #price = ' '.join(price).split()
+        except:
+            price = "0"
+        #print(price)
+
+        #price= [re.sub('[^\d\.]', '', price[i]) for i in range(len(price))]
+        
+        desc =  el.find_element_by_class_name("deal-item-desc")
+    
+        deals.append({
+            "item_name": items.text,
+            "description": desc.text,
+            "price": int(price),
+            "catagory": "deal"
+            })
+        all_product.append({
+            "item_name": items.text,
+            "description": desc.text,
+            "price": int(price),
+            "catagory": "deal"
+            })
+    print(len(deals))
     #####################################################################
     driver.get("https://www.pizzahutbd.com/store-filter")
     name  = [i.text for i in driver.find_elements_by_class_name("storename")]
@@ -219,7 +250,7 @@ def scrap_upload_pizzahut():
     #print(all_loaction)
     #print(all_product)
     #print(len(all_product))
-    print(all_loaction)
+    #print(all_loaction)
     driver.quit()
     
     import pyrebase 
