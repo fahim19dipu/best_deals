@@ -2,13 +2,15 @@
 """
 Created on Fri Sep 23 01:16:22 2022
 
-@author: user
+@author: Fahim
 """
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import re 
 import time
 from selenium.webdriver.chrome.options import Options
+import pyrebase 
+####################################### scrap pizzahut and update database
 def scrap_upload_pizzahut():
     chrome_options = Options()
     chrome_options.add_argument("--disable-extensions")
@@ -24,9 +26,10 @@ def scrap_upload_pizzahut():
     url = 'https://www.pizzahutbd.com/'
     driver.get(url)
     print(driver.title)
-    
+    ###############################################   main page
     inputElement = driver.find_element_by_xpath('//*[@id="delivery"]/div/a/div/input')
     inputElement.click()
+    #############################################  pop up
     inputElement = driver.find_element_by_id("pac-input")
     driver.implicitly_wait(5)
     inputElement.send_keys('Dhaka Bangladesh')
@@ -34,6 +37,7 @@ def scrap_upload_pizzahut():
     inputElement.send_keys(Keys.ARROW_DOWN)
     inputElement.send_keys(Keys.ENTER)
     time.sleep(3) 
+    ############################################# 
     #print(driver.title)
     all_product = []
     pan_pizza=[]
@@ -44,7 +48,7 @@ def scrap_upload_pizzahut():
     appatizers =[]
     drinks =[]
     drinks =[]
-    ##################################################################
+    ############################################### pan pizza page
     items  = [i.text for i in driver.find_elements_by_class_name("left-con-pizzas")]
     print(driver.title)
     price  = [i.text for i in driver.find_elements_by_class_name("price-info")]
@@ -66,7 +70,7 @@ def scrap_upload_pizzahut():
             })
     print(len(pan_pizza))
     #all_product.append(pan_pizza)
-    ######################################################################
+    ############################################## cheesy bites pizza tab
     inputElement = driver.find_element_by_xpath('//*[@id="pnProductNavContents"]/a[2]').click()
     items  = [i.text for i in driver.find_elements_by_class_name("left-con-pizzas")]
     price  = [i.text for i in driver.find_elements_by_class_name("price-info")]
@@ -88,7 +92,7 @@ def scrap_upload_pizzahut():
             })
     print(len(cheesy_bites))
     #all_product.append(cheesy_bites)
-    #######################################################################
+    ########################################## saussage crust pizza tab
     inputElement = driver.find_element_by_xpath('//*[@id="pnProductNavContents"]/a[3]').click()
     items  = [i.text for i in driver.find_elements_by_class_name("left-con-pizzas")]
     price  = [i.text for i in driver.find_elements_by_class_name("price-info")]
@@ -110,7 +114,7 @@ def scrap_upload_pizzahut():
             })
     print(len(sussage_crust))
     #all_product.append(sussage_crust)
-    ##########################################################################
+    ############################################ thin crust pizza tab
     inputElement = driver.find_element_by_xpath('//*[@id="pnProductNavContents"]/a[4]').click()
     items  = [i.text for i in driver.find_elements_by_class_name("left-con-pizzas")]
     price  = [i.text for i in driver.find_elements_by_class_name("price-info")]
@@ -132,7 +136,7 @@ def scrap_upload_pizzahut():
             })
     print(len(thin_crust))
     #all_product.append(thin_crust)
-    ################################################################################
+    ##########################################   pasta page
     inputElement = driver.find_element_by_xpath('//*[@id="navbar"]/ul/li[2]/a').click()
     items  = [i.text for i in driver.find_elements_by_class_name("left-con-pizzas")]
     price  = [i.text for i in driver.find_elements_by_class_name("price-info")]
@@ -153,7 +157,7 @@ def scrap_upload_pizzahut():
             })
     print(len(pasta))
     #all_product.append(pasta)
-    #############################################################################################################
+    ###########################################   appatizers page
     inputElement = driver.find_element_by_xpath('//*[@id="navbar"]/ul/li[3]/a').click()
     items  = [i.text for i in driver.find_elements_by_class_name("left-con-pizzas")]
     price  = [i.text for i in driver.find_elements_by_class_name("pro_price")]
@@ -176,7 +180,7 @@ def scrap_upload_pizzahut():
             })        
     print(len(appatizers))
     #all_product.append(appatizers)
-    #######################################################################
+    ###################################    drinks page
     inputElement = driver.find_element_by_xpath('//*[@id="navbar"]/ul/li[5]/a').click()
     items  = [i.text for i in driver.find_elements_by_class_name("left-con-pizzas")]
     price  = [i.text for i in driver.find_elements_by_class_name("pro_price")]
@@ -199,8 +203,7 @@ def scrap_upload_pizzahut():
             })
     print(len(drinks))
     
-    #######################################################################
-    #all_product.append(drinks)//*[@id="navbar"]/ul/li[4]/a
+    ################################## deals page
     deals = []
     inputElement = driver.find_element_by_xpath('//*[@id="navbar"]/ul/li[4]/a').click()
     inputElement = driver.find_elements_by_class_name("deals_card")
@@ -231,7 +234,7 @@ def scrap_upload_pizzahut():
             "catagory": "deal"
             })
     print(len(deals))
-    #####################################################################
+    #######################################   location page
     driver.get("https://www.pizzahutbd.com/store-filter")
     name  = [i.text for i in driver.find_elements_by_class_name("storename")]
     address  = [i.text for i in driver.find_elements_by_class_name("storeaddress")]
@@ -252,8 +255,7 @@ def scrap_upload_pizzahut():
     #print(len(all_product))
     #print(all_loaction)
     driver.quit()
-    
-    import pyrebase 
+    ######################################## database config
     firebaseConfig = {
       "apiKey": "AIzaSyAeJ-M2zzxApfppZnATuwqyp0CL90xWwJk",
       "authDomain": "fast-food-chains.firebaseapp.com",
@@ -267,7 +269,7 @@ def scrap_upload_pizzahut():
     
     firebase=pyrebase.initialize_app(firebaseConfig)
     db= firebase.database()
-    
+    ####################################### update database
     db.child("Database").child("pizzahut").child("Menu").set(all_product)
     db.child("Database").child("pizzahut").child("Locations").set(all_loaction)
 #scrap_upload_pizzahut()
