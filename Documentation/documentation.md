@@ -108,14 +108,14 @@ up-front commitment.
 **Output**
 
 **Postman
-visualization**!(media/image2.png){width="7.311537620297463in"
+visualization**![](media/image2.png){width="7.311537620297463in"
 height="2.891025809273841in"}
 
 ![](media/image3.png){width="7.428472222222222in"
 height="1.6730774278215224in"}
 
 **Postman Tests for visualization**
-
+```javascript
 var template **=** \`
 
     \<style type=\"text/css\"\>
@@ -249,3 +249,4 @@ pm.visualizer.**set**(template, {
     response: pm.response.json()
 
 });
+```
