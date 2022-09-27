@@ -15,7 +15,7 @@ To run the API run only the flask_api_main.py file from src folder in python.
 - Then it will run the REST API and it will wait for htttp requests 
     * where "http://127.0.0.1:5000/best_deals/" is the root-endpoint and ":item/:pref_price/:location" is the path". in the path "item" must be a string, "pref_price" must be integer denoting the prefered price, "location" must be a string denoting the address of the users.
 - after getting a correct request the API will send a JSON response containing matched food items, nearest mad chef locations and nearest pizzahut location 
-    * which can be accessed respectively as ```response.item_list```, ```response.madChef_loaction``` and ```response.pizzahut_locations``. Each of which is a list of dictionary.
+    * which can be accessed respectively as ```response.item_list```, ```response.madChef_loaction``` and ```response.pizzahut_locations```. Each of which is a list of dictionary.
 ## Input
 ```html
 http://127.0.0.1:5000/best_deals/chicken/400/banani
