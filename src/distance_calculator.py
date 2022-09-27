@@ -2,7 +2,8 @@ from selenium import webdriver
 import time
 from selenium.webdriver.chrome.options import Options
 import re
-def calc_distance(location,destination):
+################################### calculate and return user location againt all locations of a resturant.
+def calc_distance(location, destination):
     chrome_options = Options()
     #chrome_options.add_argument("USER AGENT")
     chrome_options.add_argument("--disable-extensions")
@@ -32,10 +33,10 @@ def calc_distance(location,destination):
         inputElement = driver.find_element_by_xpath('//*[@id="getRoute"]')
         inputElement.click()
         time.sleep(6)
-        inputElement = driver.find_element_by_xpath('//*[@id="sidepanel"]/div/div/div[3]/div[1]/span[1]')
-        val = inputElement.text
-        val= re.sub('[^\d\.]', '', val)
-        distance = val.replace(" km","")
+        outputElement = driver.find_element_by_xpath('//*[@id="sidepanel"]/div/div/div[3]/div[1]/span[1]')
+        val = outputElement.text
+        distance= re.sub('[^\d\.]', '', val) ## remove all non digit elements
+        #distance = val.replace(" km","") ##
         print(distance)
         distance_list.append(float(distance))
     driver.quit()
