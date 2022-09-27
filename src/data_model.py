@@ -2,20 +2,13 @@
 """
 Created on Mon Sep 26 23:00:52 2022
 
-@author: user
+@author: fahim
 """
-
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Sep 25 18:14:14 2022
-
-@author: user
-"""
-
 import pyrebase 
 import distance_calculator 
 import numpy as np
 def model(pref_price,item,location):
+    ###########################  Connecting with firebase database and getting all data
     firebaseConfig = {
       "apiKey": "AIzaSyAeJ-M2zzxApfppZnATuwqyp0CL90xWwJk",
       "authDomain": "fast-food-chains.firebaseapp.com",
