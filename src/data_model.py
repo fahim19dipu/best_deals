@@ -7,7 +7,8 @@ Created on Mon Sep 26 23:00:52 2022
 import pyrebase 
 import distance_calculator 
 import numpy as np
-def model(pref_price,item,location):
+################################   Provide best deals based on inputs
+def model(pref_price, item, location):
     ###########################  Connecting with firebase database and getting all data
     firebaseConfig = {
       "apiKey": "AIzaSyAeJ-M2zzxApfppZnATuwqyp0CL90xWwJk",
@@ -63,12 +64,12 @@ def model(pref_price,item,location):
             address_mad.append(loc['address'])
             loc_list_mad.append(loc)
             
-        distances = np.array(distance_calculator.calc_distance(location, address_mad))
-        indx = np.argpartition(distances,2)
+        distances = np.array(distance_calculator.calc_distance(location, address_mad)) ###  calculate distance
+        indx = np.argpartition(distances,2)                                            ### finding lowest two distances                                       
         indx = indx[0:2]
         
         for i in indx:
-            loc_list_mad[i].update({"distance": distances[i] })
+            loc_list_mad[i].update({"distance": distances[i] })                       ## appending distance from branch
             nearest_mad.append(loc_list_mad[i])
         #print(nearest_mad)
     #################################     Find 2 nearest pizzahut locations if item found at pizzahut menu        
@@ -81,13 +82,12 @@ def model(pref_price,item,location):
             address_hut.append(loc['address'])
             loc_list_hut.append(loc)
             
-            
-        distances = np.array(distance_calculator.calc_distance(location, address_hut))
+        distances = np.array(distance_calculator.calc_distance(location, address_hut)) ### finding lowest two distances
         indx = np.argpartition(distances,2)
         indx = indx[0:2]
         
         for i in indx:
-            loc_list_hut[i].update({"distance": distances[i] })
+            loc_list_hut[i].update({"distance": distances[i] })                        ## appending distance from branch
             nearest_hut.append(loc_list_hut[i])
         #print(nearest_hut)
         ###############################
