@@ -2,13 +2,14 @@
 """
 Created on Thu Sep 22 21:11:54 2022
 
-@author: user
+@author: Fahim
 """
 
 from bs4 import BeautifulSoup
 import requests
 import pyrebase 
-def scrap_upload_madchef():
+######################################  scap mad chef website and update database
+def scrap_upload_madchef():                       
     URL = "https://madchef.com.bd/menu"
     response = requests.get(URL)
     page_content = BeautifulSoup(response.content, "html.parser")
@@ -57,7 +58,7 @@ def scrap_upload_madchef():
     for i in range(len(table_body)):
         brach_name = table_body[i].find(class_="branch-name").text
         address = table_body[i].find(class_="branch-address").text
-        phone = table_body[i].find(class_="branch-phone").text.replace('\u202d','').replace('\u202c','')
+        phone = table_body[i].find(class_="branch-phone").text.replace('\u202d','').replace('\u202c','')  
         brach_name = " ".join(brach_name.split())
         address = " ".join(address.split())
         phone = " ".join(phone.split())
@@ -67,7 +68,7 @@ def scrap_upload_madchef():
                 "phone": phone,
                 })
     print(all_loaction)
-    
+    ################################################   configure database
     firebaseConfig = {
       "apiKey": "AIzaSyAeJ-M2zzxApfppZnATuwqyp0CL90xWwJk",
       "authDomain": "fast-food-chains.firebaseapp.com",
@@ -81,7 +82,7 @@ def scrap_upload_madchef():
     
     firebase=pyrebase.initialize_app(firebaseConfig)
     db= firebase.database()
-    
+    ######################################################## Update database
     db.child("Database").child("Madchef").child("Menu").set(all_products)
     db.child("Database").child("Madchef").child("Locations").set(all_loaction)
 #scrap_upload_madchef()
