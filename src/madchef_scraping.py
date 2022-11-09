@@ -1,74 +1,45 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Sep 22 21:11:54 2022
+Created on Thu Oct 20 00:58:17 2022
 
-@author: Fahim
+@author: user
 """
 
 from bs4 import BeautifulSoup
 import requests
 import pyrebase 
-######################################  scap mad chef website and update database
-def scrap_upload_madchef():                       
-    URL = "https://madchef.com.bd/menu"
+
+def scrap_upload_madchef():
+    URL = "https://madchef.com.bd/#menu"
     response = requests.get(URL)
     page_content = BeautifulSoup(response.content, "html.parser")
-    c =0
-    item = []
+    
     all_products = []
-    for i in range(100):
-        tag = "menumodal"+str(i)
-        try:
-            table_body = page_content.find(id=tag)
-            price = table_body.find('div', {'class': 'menumodal-price'}).text#.rstrip(' \n').replace('\n', '').replace('\r', '')
-            title = table_body.find('div', {'class': 'menumodal-title'}).text
-            cat = table_body.find('div', {'class': 'menumodal-category'}).text.replace("Category: ",'')
-            desc = table_body.find('div', {'class': 'menumodal-description'}).text
-               
-            price = " ".join(price.split())
-            price = int(price.replace('৳',''))
-            
-            title = " ".join(title.split())
-            cat = " ".join(cat.split())
-            desc = " ".join(desc.split())
-            #print(title," ",price)
-            all_products.append({
-            "item_name": title,
-            "description": desc,
-            "price": price,
-            "catagory": cat
-            })
-            temp = (title,price,cat,desc)
-            item.append(temp)
-            c+=1
-        except:
-            continue        
+    titles =[s  for div in page_content.select('.modal-footer .modal-title') for s in div.stripped_strings]     
+    price =[int(s.replace("Tk ",''))  for div in page_content.select('.modal-footer .modal-price') for s in div.stripped_strings]
+    catagory =[s.replace("Category: ",'')  for div in page_content.select('.modal-footer .modal-category') for s in div.stripped_strings]
+    description = [s  for div in page_content.select('.modal-footer .modal-details') for s in div.stripped_strings]
+    for i in range(len(titles)):
+        all_products.append({
+        "item_name": titles[i],
+        "description": description[i],
+        "price": price[i],
+        "catagory": catagory[i]
+        })
     print(all_products)
     
-    URL = "https://madchef.com.bd/contact#branches"
-    response = requests.get(URL)
-    page_content = BeautifulSoup(response.content, "html.parser")
-    table_body = page_content.find('div', {'class': 'row'})
-    c =0
-    item = []
-    all_loaction= []
-    table_body = table_body.find('div',{'class':"details"})
-    table_body = table_body.find_all('div',{'class':"branch"})
+    all_location = []
+    branch =[s  for div in page_content.select('.location-information-box .branch-name') for s in div.stripped_strings]     
+    address =[s  for div in page_content.select('.location-information-box .address') for s in div.stripped_strings]
+    phone =[s.replace('\u202d','').replace('\u202c','') for div in page_content.select('.location-information-box .phone') for s in div.stripped_strings]
+    for i in range(len(branch)):
+        all_location.append({
+        "branch_name": branch[i],
+        "address": address[i],
+        "phone": phone[i]
+        })
+    print(all_location)   
     
-    for i in range(len(table_body)):
-        brach_name = table_body[i].find(class_="branch-name").text
-        address = table_body[i].find(class_="branch-address").text
-        phone = table_body[i].find(class_="branch-phone").text.replace('\u202d','').replace('\u202c','')  
-        brach_name = " ".join(brach_name.split())
-        address = " ".join(address.split())
-        phone = " ".join(phone.split())
-        all_loaction.append({
-                "branch_name": brach_name,
-                "address": address,
-                "phone": phone,
-                })
-    print(all_loaction)
-    ################################################   configure database
     firebaseConfig = {
       "apiKey": "AIzaSyAeJ-M2zzxApfppZnATuwqyp0CL90xWwJk",
       "authDomain": "fast-food-chains.firebaseapp.com",
@@ -82,7 +53,7 @@ def scrap_upload_madchef():
     
     firebase=pyrebase.initialize_app(firebaseConfig)
     db= firebase.database()
-    ######################################################## Update database
+    
     db.child("Database").child("Madchef").child("Menu").set(all_products)
-    db.child("Database").child("Madchef").child("Locations").set(all_loaction)
+    db.child("Database").child("Madchef").child("Locations").set(all_location)    
 #scrap_upload_madchef()
